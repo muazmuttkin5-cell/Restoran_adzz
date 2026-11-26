@@ -1,0 +1,930 @@
+/* ==========================================================================
+   ADZZ Restaurant  |  css/style.css
+   Designed & Developed by MuadzMuttaqin
+   --------------------------------------------------------------------------
+   ATURAN: semua CLASS dan ID memakai awalan "muadzmuttaqin_" (huruf kecil).
+   DAFTAR ISI
+    1. Variables (palet, font, tema gelap/terang)
+    2. Reset dan dasar
+    3. Tipografi dan utilitas
+    4. Tombol
+    5. Header / navbar
+    6. Footer
+    7. Hero 3D (index)
+    8. Header halaman dalam
+    9. Section umum (ringkasan, layanan, kutipan, CTA)
+   10. Stacking 3D "Signature Dishes"
+   11. Menu: filter, kartu 3D, keranjang
+   12. About: scroll-reveal huruf, visi misi, keunggulan, chef
+   13. Gallery: flip card + lightbox
+   14. Slider testimoni 3D
+   15. Form (reservasi + kontak)
+   16. Toast dan tombol kembali ke atas
+   17. Animasi masuk saat scroll
+   18. Responsive
+   19. prefers-reduced-motion
+   20. Maskot ADZZ Chef
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. VARIABLES
+   ========================================================================== */
+:root {
+  /* --- Palet dasar --- */
+  --muadzmuttaqin_black: #0C0C0C;
+  --muadzmuttaqin_surface: #171717;
+  --muadzmuttaqin_gold: #C9A227;
+  --muadzmuttaqin_gold-light: #E2C766;
+  --muadzmuttaqin_gold-deep: #7A5F0A;   /* teks emas di atas cream (kontras ~5:1) */
+  --muadzmuttaqin_cream: #F5EFE0;
+  --muadzmuttaqin_cream-dark: #E9E0C8;
+  --muadzmuttaqin_muted: #A9A394;
+  --muadzmuttaqin_muted-dark: #5C5748;
+  --muadzmuttaqin_grad-from: #646973;   /* gradien judul hero */
+  --muadzmuttaqin_grad-to: #D7E2EA;
+
+  /* --- Font --- */
+  --muadzmuttaqin_font-head: "Playfair Display", Georgia, "Times New Roman", serif;
+  --muadzmuttaqin_font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* --- Ukuran dan 3D --- */
+  --muadzmuttaqin_header-h: 72px;
+  --muadzmuttaqin_radius: 18px;
+  --muadzmuttaqin_persp: 1200px;          /* nilai perspective, diperkecil di layar kecil */
+  --muadzmuttaqin_slide-z: -150px;        /* kedalaman kartu samping slider */
+  --muadzmuttaqin_slide-rot: -32deg;      /* putaran kartu samping slider */
+  --muadzmuttaqin_ease: cubic-bezier(.2, .7, .2, 1);
+
+  /* --- Token tema (default: GELAP) --- */
+  --muadzmuttaqin_bg: var(--muadzmuttaqin_black);
+  --muadzmuttaqin_bg-card: var(--muadzmuttaqin_surface);
+  --muadzmuttaqin_text: var(--muadzmuttaqin_cream);
+  --muadzmuttaqin_text-soft: var(--muadzmuttaqin_muted);
+  --muadzmuttaqin_accent: var(--muadzmuttaqin_gold);
+  --muadzmuttaqin_line: rgba(201, 162, 39, .30);
+  --muadzmuttaqin_shadow: rgba(0, 0, 0, .55);
+  --muadzmuttaqin_danger: #FF9188;
+  --muadzmuttaqin_alt-bg: var(--muadzmuttaqin_cream);   /* bagian melengkung */
+  color-scheme: dark;
+}
+
+/* Tema TERANG: hanya mengganti token, komponen tidak perlu diubah */
+html[data-theme="light"] {
+  --muadzmuttaqin_bg: var(--muadzmuttaqin_cream);
+  --muadzmuttaqin_bg-card: #FBF7EC;
+  --muadzmuttaqin_text: var(--muadzmuttaqin_black);
+  --muadzmuttaqin_text-soft: var(--muadzmuttaqin_muted-dark);
+  --muadzmuttaqin_accent: var(--muadzmuttaqin_gold-deep);
+  --muadzmuttaqin_line: rgba(122, 95, 10, .35);
+  --muadzmuttaqin_shadow: rgba(60, 45, 5, .25);
+  --muadzmuttaqin_danger: #B3261E;
+  --muadzmuttaqin_alt-bg: var(--muadzmuttaqin_cream-dark);
+  color-scheme: light;
+}
+
+/* Zona yang SELALU gelap (header, hero, footer, CTA, kartu stacking):
+   token di-reset ke nilai gelap supaya komponen di dalamnya tetap kontras. */
+.muadzmuttaqin_zone-dark {
+  --muadzmuttaqin_bg: var(--muadzmuttaqin_black);
+  --muadzmuttaqin_bg-card: var(--muadzmuttaqin_surface);
+  --muadzmuttaqin_text: var(--muadzmuttaqin_cream);
+  --muadzmuttaqin_text-soft: var(--muadzmuttaqin_muted);
+  --muadzmuttaqin_accent: var(--muadzmuttaqin_gold);
+  --muadzmuttaqin_line: rgba(201, 162, 39, .30);
+  --muadzmuttaqin_shadow: rgba(0, 0, 0, .55);
+  --muadzmuttaqin_danger: #FF9188;
+  background: var(--muadzmuttaqin_bg);
+  color: var(--muadzmuttaqin_text);
+  color-scheme: dark;
+}
+
+/* Zona cream (bagian "putih" dengan sudut atas melengkung) */
+.muadzmuttaqin_section-cream {
+  --muadzmuttaqin_bg-card: #FFFDF7;
+  --muadzmuttaqin_text: var(--muadzmuttaqin_black);
+  --muadzmuttaqin_text-soft: var(--muadzmuttaqin_muted-dark);
+  --muadzmuttaqin_accent: var(--muadzmuttaqin_gold-deep);
+  --muadzmuttaqin_line: rgba(122, 95, 10, .32);
+  --muadzmuttaqin_shadow: rgba(60, 45, 5, .28);
+  background: var(--muadzmuttaqin_alt-bg);
+  color: var(--muadzmuttaqin_text);
+  border-radius: clamp(28px, 5vw, 56px) clamp(28px, 5vw, 56px) 0 0;
+}
+
+
+/* ==========================================================================
+   2. RESET DAN DASAR
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--muadzmuttaqin_header-h) + 12px); }
+
+body {
+  font-family: var(--muadzmuttaqin_font-body);
+  font-size: 1rem;
+  line-height: 1.65;
+  background: var(--muadzmuttaqin_bg);
+  color: var(--muadzmuttaqin_text);
+  overflow-x: hidden;                 /* cegah scroll horizontal */
+  -webkit-font-smoothing: antialiased;
+  transition: background-color .35s ease, color .35s ease;
+}
+
+/* Wrapper: overflow-x "clip" tidak membuat scroll container, jadi position: sticky tetap jalan */
+.muadzmuttaqin_wrapper { overflow-x: hidden; overflow-x: clip; }
+
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+input, select, textarea { font: inherit; color: inherit; }
+[hidden] { display: none !important; }
+
+:focus-visible { outline: 2px solid var(--muadzmuttaqin_gold-light); outline-offset: 3px; }
+
+.muadzmuttaqin_skip {
+  position: fixed; left: 1rem; top: -4rem; z-index: 500;
+  padding: .6rem 1rem; border-radius: 8px;
+  background: var(--muadzmuttaqin_gold); color: var(--muadzmuttaqin_black); font-weight: 600;
+  transition: top .2s;
+}
+.muadzmuttaqin_skip:focus { top: 1rem; }
+
+
+/* ==========================================================================
+   3. TIPOGRAFI DAN UTILITAS
+   ========================================================================== */
+h1, h2, h3, h4 {
+  font-family: var(--muadzmuttaqin_font-head);
+  font-weight: 800;
+  line-height: 1.15;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+h2 { font-size: clamp(1.85rem, 4.4vw, 3.05rem); }
+h3 { font-size: 1.15rem; letter-spacing: .045em; }
+
+/* Kelas gradien judul (sesuai brief) */
+.muadzmuttaqin_hero-heading {
+  background: linear-gradient(180deg, #646973 0%, #D7E2EA 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.muadzmuttaqin_container { width: min(1180px, 100% - 2.5rem); margin-inline: auto; }
+.muadzmuttaqin_section { padding: clamp(4rem, 9vw, 7rem) 0; }
+.muadzmuttaqin_section-head { max-width: 640px; margin-bottom: clamp(2rem, 5vw, 3.5rem); }
+.muadzmuttaqin_section-head p { margin-top: 1rem; color: var(--muadzmuttaqin_text-soft); }
+.muadzmuttaqin_center { text-align: center; margin-inline: auto; }
+
+.muadzmuttaqin_link-line {
+  display: inline-block; margin-top: 1.5rem; padding-bottom: .2rem;
+  color: var(--muadzmuttaqin_accent); font-weight: 600;
+  border-bottom: 1px solid currentColor;
+  transition: color .25s, border-color .25s;
+}
+.muadzmuttaqin_link-line:hover { color: var(--muadzmuttaqin_text); }
+
+
+/* ==========================================================================
+   4. TOMBOL
+   ========================================================================== */
+/* Tombol utama: pill, gradasi emas-hitam, outline putih tipis */
+.muadzmuttaqin_btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  padding: .9rem 1.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, .6);
+  background: linear-gradient(100deg, var(--muadzmuttaqin_gold-deep) 0%, #2B2205 58%, var(--muadzmuttaqin_black) 100%);
+  background-size: 140% 100%;
+  background-position: 0% 0%;
+  color: var(--muadzmuttaqin_cream);
+  font-weight: 600; letter-spacing: .03em; line-height: 1.2;
+  box-shadow: inset 0 1px 0 rgba(226, 199, 102, .55), 0 10px 26px rgba(201, 162, 39, .16);
+  transition: background-position .4s ease, box-shadow .3s ease;
+  /* transform dipakai efek magnet (JS), jadi hover memakai background/box-shadow saja */
+}
+.muadzmuttaqin_btn:hover {
+  background-position: 100% 0%;
+  box-shadow: inset 0 1px 0 rgba(226, 199, 102, .7), 0 14px 34px rgba(201, 162, 39, .38);
+}
+.muadzmuttaqin_btn-ghost {
+  background: transparent; border-color: var(--muadzmuttaqin_gold);
+  color: var(--muadzmuttaqin_accent); box-shadow: none;
+}
+.muadzmuttaqin_btn-ghost:hover { background: var(--muadzmuttaqin_gold); color: var(--muadzmuttaqin_black); box-shadow: none; }
+.muadzmuttaqin_btn-sm { padding: .55rem 1.15rem; font-size: .88rem; }
+[data-magnet] { transition: transform .3s ease-out; will-change: transform; }
+
+
+/* ==========================================================================
+   5. HEADER / NAVBAR (sticky)
+   ========================================================================== */
+.muadzmuttaqin_header {
+  position: sticky; top: 0; z-index: 100;
+  height: var(--muadzmuttaqin_header-h);
+  margin-bottom: calc(var(--muadzmuttaqin_header-h) * -1);  /* hero berada di bawah header transparan */
+  transition: background-color .3s ease, box-shadow .3s ease, backdrop-filter .3s ease;
+}
+.muadzmuttaqin_header.muadzmuttaqin_scrolled {
+  background: rgba(12, 12, 12, .86);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  box-shadow: 0 1px 0 var(--muadzmuttaqin_line);
+}
+.muadzmuttaqin_header > .muadzmuttaqin_container { height: 100%; }
+.muadzmuttaqin_nav { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
+
+.muadzmuttaqin_logo { display: flex; flex-direction: column; line-height: 1; }
+.muadzmuttaqin_logo-mark {
+  font-family: var(--muadzmuttaqin_font-head); font-weight: 900; font-size: 1.7rem; letter-spacing: .16em;
+  color: var(--muadzmuttaqin_cream);
+}
+.muadzmuttaqin_logo-sub {
+  font-family: var(--muadzmuttaqin_font-head); font-style: italic; font-size: .8rem;
+  color: var(--muadzmuttaqin_gold); margin-top: .2rem;
+}
+
+.muadzmuttaqin_nav-list { display: flex; align-items: center; gap: clamp(1rem, 2.4vw, 2.1rem); }
+.muadzmuttaqin_nav-link {
+  position: relative; padding: .4rem 0;
+  font-size: .93rem; font-weight: 500; color: var(--muadzmuttaqin_muted);
+  transition: color .25s;
+}
+.muadzmuttaqin_nav-link::after {
+  content: ""; position: absolute; left: 0; bottom: 0; width: 100%; height: 1px;
+  background: var(--muadzmuttaqin_gold); transform: scaleX(0); transform-origin: left; transition: transform .3s ease;
+}
+.muadzmuttaqin_nav-link:hover, .muadzmuttaqin_nav-link[aria-current="page"] { color: var(--muadzmuttaqin_cream); }
+.muadzmuttaqin_nav-link:hover::after, .muadzmuttaqin_nav-link[aria-current="page"]::after { transform: scaleX(1); }
+
+.muadzmuttaqin_nav-actions { display: flex; align-items: center; gap: .5rem; }
+.muadzmuttaqin_cart-link, .muadzmuttaqin_theme-toggle, .muadzmuttaqin_hamburger {
+  position: relative; display: grid; place-items: center;
+  width: 42px; height: 42px; border-radius: 50%;
+  color: var(--muadzmuttaqin_cream);
+  border: 1px solid rgba(245, 239, 224, .22);
+  transition: border-color .25s, background-color .25s;
+}
+.muadzmuttaqin_cart-link:hover, .muadzmuttaqin_theme-toggle:hover, .muadzmuttaqin_hamburger:hover {
+  border-color: var(--muadzmuttaqin_gold); background: rgba(201, 162, 39, .12);
+}
+.muadzmuttaqin_cart-link svg, .muadzmuttaqin_theme-toggle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.muadzmuttaqin_cart-badge {
+  position: absolute; top: -5px; right: -5px; min-width: 19px; height: 19px; padding: 0 5px;
+  display: grid; place-items: center; border-radius: 999px;
+  background: var(--muadzmuttaqin_gold); color: var(--muadzmuttaqin_black); font-size: .72rem; font-weight: 700;
+}
+/* ikon tema: matahari saat gelap (aksi: ke terang), bulan saat terang */
+html[data-theme="light"] .muadzmuttaqin_icon-sun { display: none; }
+html:not([data-theme="light"]) .muadzmuttaqin_icon-moon { display: none; }
+
+.muadzmuttaqin_hamburger { display: none; }
+.muadzmuttaqin_burger-line { display: block; width: 18px; height: 2px; background: currentColor; border-radius: 2px; transition: transform .3s ease, opacity .2s ease; }
+.muadzmuttaqin_burger-line + .muadzmuttaqin_burger-line { margin-top: 4px; }
+.muadzmuttaqin_hamburger.muadzmuttaqin_open .muadzmuttaqin_burger-line:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.muadzmuttaqin_hamburger.muadzmuttaqin_open .muadzmuttaqin_burger-line:nth-child(2) { opacity: 0; }
+.muadzmuttaqin_hamburger.muadzmuttaqin_open .muadzmuttaqin_burger-line:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+
+/* ==========================================================================
+   6. FOOTER
+   ========================================================================== */
+.muadzmuttaqin_footer { padding: 4.5rem 0 0; border-top: 1px solid var(--muadzmuttaqin_line); }
+.muadzmuttaqin_footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1.2fr 1fr; gap: 2.5rem; }
+.muadzmuttaqin_footer-brand p { margin-top: 1rem; max-width: 32ch; color: var(--muadzmuttaqin_text-soft); font-size: .95rem; }
+.muadzmuttaqin_footer-title { font-size: 1rem; margin-bottom: 1rem; color: var(--muadzmuttaqin_gold); }
+.muadzmuttaqin_footer-links li + li { margin-top: .5rem; }
+.muadzmuttaqin_footer-links a, .muadzmuttaqin_footer-links span { color: var(--muadzmuttaqin_text-soft); font-size: .95rem; transition: color .25s; }
+.muadzmuttaqin_footer-links a:hover { color: var(--muadzmuttaqin_gold-light); }
+.muadzmuttaqin_footer-bottom {
+  margin-top: 3.5rem; padding: 1.4rem 0;
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: .6rem 2rem;
+  border-top: 1px solid rgba(245, 239, 224, .12);
+  font-size: .88rem; color: var(--muadzmuttaqin_text-soft);
+}
+.muadzmuttaqin_footer-credit { color: var(--muadzmuttaqin_gold-light); }
+
+
+/* ==========================================================================
+   7. HERO 3D (index.html)
+   Teknik 3D yang dipakai:
+   - perspective        : pada .muadzmuttaqin_hero-grid (kamera untuk judul + foto)
+   - transform-style    : preserve-3d pada rantai foto (visual > wrap > photo)
+   - rotateX / rotateY  : diisi JavaScript mengikuti kursor (tilt)
+   - translateZ         : lapisan foto bulat dan label "Pilihan Chef" maju ke depan
+   ========================================================================== */
+.muadzmuttaqin_hero {
+  position: relative; display: flex; align-items: center;
+  min-height: 100vh; min-height: 100svh;
+  padding: calc(var(--muadzmuttaqin_header-h) + 2.5rem) 0 4.5rem;
+  background:
+    radial-gradient(55% 50% at 78% 45%, rgba(201, 162, 39, .22), transparent 70%),
+    radial-gradient(35% 35% at 8% 92%, rgba(201, 162, 39, .09), transparent 70%),
+    var(--muadzmuttaqin_black);
+  overflow-x: hidden; overflow-x: clip;
+}
+.muadzmuttaqin_hero-grid {
+  display: grid; grid-template-columns: 1.05fr .95fr; align-items: center;
+  gap: clamp(2rem, 5vw, 4.5rem);
+  perspective: var(--muadzmuttaqin_persp);                 /* [3D: perspective] */
+}
+.muadzmuttaqin_hero-copy, .muadzmuttaqin_hero-visual { transform-style: preserve-3d; }  /* [3D: preserve-3d] */
+
+.muadzmuttaqin_hero-title {
+  display: inline-block;
+  font-size: clamp(4.2rem, 15vw, 10.5rem); line-height: 1; letter-spacing: .06em;
+  padding-block: .04em;
+  will-change: transform;           /* JS memberi rotateX / rotateY */
+}
+.muadzmuttaqin_hero-tagline {
+  margin-top: .6rem;
+  font-family: var(--muadzmuttaqin_font-head); font-style: italic; font-weight: 600;
+  font-size: clamp(1.2rem, 2.6vw, 1.7rem); color: var(--muadzmuttaqin_gold);
+}
+.muadzmuttaqin_hero-text { margin-top: 1.4rem; max-width: 46ch; color: var(--muadzmuttaqin_muted); font-size: 1.05rem; }
+.muadzmuttaqin_hero-actions { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2.2rem; }
+
+.muadzmuttaqin_hero-visual { display: grid; place-items: center; padding: 1.5rem; }
+.muadzmuttaqin_hero-photo-wrap { width: min(400px, 84%); transform-style: preserve-3d; }   /* efek magnet (translate3d) */
+.muadzmuttaqin_hero-photo {
+  --muadzmuttaqin_sx: 0px; --muadzmuttaqin_sy: 30px;     /* arah bayangan dinamis, diubah JS */
+  position: relative; aspect-ratio: 4 / 5;
+  transform-style: preserve-3d;                           /* [3D: preserve-3d] anak-anak ikut 3D */
+  will-change: transform;
+}
+.muadzmuttaqin_hero-img {
+  width: 100%; height: 100%; object-fit: cover; border-radius: 26px;
+  box-shadow: var(--muadzmuttaqin_sx) var(--muadzmuttaqin_sy) 60px rgba(0, 0, 0, .7), 0 0 0 1px var(--muadzmuttaqin_line);
+}
+/* pelat bingkai emas di BELAKANG foto */
+.muadzmuttaqin_hero-photo::before {
+  content: ""; position: absolute; inset: -16px; border: 1px solid var(--muadzmuttaqin_line); border-radius: 34px;
+  transform: translateZ(-40px);                           /* [3D: translateZ] mundur ke belakang */
+}
+.muadzmuttaqin_hero-float {
+  position: absolute; width: clamp(80px, 11vw, 124px); aspect-ratio: 1; object-fit: cover; border-radius: 50%;
+  border: 3px solid var(--muadzmuttaqin_cream); box-shadow: 0 18px 40px rgba(0, 0, 0, .55);
+}
+.muadzmuttaqin_float-a { top: 5%; left: -13%; transform: translateZ(80px); }                 /* [3D: translateZ] maju */
+.muadzmuttaqin_float-b { bottom: 12%; right: -11%; width: clamp(64px, 9vw, 100px); transform: translateZ(55px); }
+.muadzmuttaqin_hero-tag {
+  position: absolute; left: 7%; bottom: -3%; transform: translateZ(100px);             /* [3D: translateZ] paling depan */
+  padding: .55rem 1.1rem; border-radius: 999px;
+  background: var(--muadzmuttaqin_black); border: 1px solid var(--muadzmuttaqin_gold);
+  color: var(--muadzmuttaqin_cream); font-size: .85rem; font-weight: 500;
+}
+
+/* Animasi masuk hero (sekali saat halaman dibuka) */
+.muadzmuttaqin_hero-copy { animation: muadzmuttaqin_rise .9s var(--muadzmuttaqin_ease) both; }
+.muadzmuttaqin_hero-visual { animation: muadzmuttaqin_rise3d 1.1s var(--muadzmuttaqin_ease) .15s both; }
+@keyframes muadzmuttaqin_rise { from { opacity: 0; transform: translateY(36px); } to { opacity: 1; transform: none; } }
+@keyframes muadzmuttaqin_rise3d { from { opacity: 0; transform: translateY(50px) rotateX(-14deg); } to { opacity: 1; transform: none; } }
+
+/* Layar sentuh (tanpa kursor): tilt dimatikan di JS, diganti animasi melayang otomatis */
+@media not all and (hover: hover) and (pointer: fine) {
+  .muadzmuttaqin_hero-photo { animation: muadzmuttaqin_float 7s ease-in-out infinite; }
+  .muadzmuttaqin_hero-title { animation: muadzmuttaqin_float-soft 8s ease-in-out infinite; }
+}
+@keyframes muadzmuttaqin_float {
+  0%, 100% { transform: translateY(0) rotateX(4deg) rotateY(-7deg); }
+  50% { transform: translateY(-14px) rotateX(-3deg) rotateY(7deg); }
+}
+@keyframes muadzmuttaqin_float-soft {
+  0%, 100% { transform: translateY(0) rotateY(-3deg); }
+  50% { transform: translateY(-8px) rotateY(3deg); }
+}
+
+
+/* ==========================================================================
+   8. HEADER HALAMAN DALAM
+   ========================================================================== */
+.muadzmuttaqin_page-hero {
+  padding: calc(var(--muadzmuttaqin_header-h) + clamp(3rem, 8vw, 5.5rem)) 0 clamp(3rem, 7vw, 5rem);
+  background:
+    radial-gradient(50% 70% at 85% 10%, rgba(201, 162, 39, .2), transparent 70%),
+    var(--muadzmuttaqin_black);
+}
+.muadzmuttaqin_page-hero .muadzmuttaqin_hero-heading { font-size: clamp(2.8rem, 9vw, 5.5rem); letter-spacing: .05em; }
+.muadzmuttaqin_page-lead { margin-top: 1.2rem; max-width: 52ch; color: var(--muadzmuttaqin_muted); font-size: 1.08rem; }
+.muadzmuttaqin_page-hero-reservasi {
+  background:
+    linear-gradient(180deg, rgba(12, 12, 12, .55) 0%, rgba(12, 12, 12, .92) 100%),
+    url("../images/cta-reservasi.jpg") center / cover no-repeat,
+    var(--muadzmuttaqin_black);
+}
+
+
+/* ==========================================================================
+   9. SECTION UMUM
+   ========================================================================== */
+.muadzmuttaqin_split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 6vw, 5rem); align-items: center; }
+.muadzmuttaqin_split p + p { margin-top: 1rem; }
+.muadzmuttaqin_split > div > p { color: var(--muadzmuttaqin_text-soft); margin-top: 1.2rem; }
+
+.muadzmuttaqin_services { display: grid; gap: 1.6rem; }
+.muadzmuttaqin_service { padding-top: 1.1rem; border-top: 1px solid var(--muadzmuttaqin_line); }
+.muadzmuttaqin_service p { margin-top: .4rem; color: var(--muadzmuttaqin_text-soft); font-size: .96rem; }
+
+/* kartu kutipan statis (Home) */
+.muadzmuttaqin_quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem; }
+.muadzmuttaqin_quote {
+  display: flex; flex-direction: column; gap: 1rem; height: 100%;
+  padding: 1.8rem; border-radius: var(--muadzmuttaqin_radius);
+  background: var(--muadzmuttaqin_bg-card); border: 1px solid var(--muadzmuttaqin_line);
+}
+.muadzmuttaqin_quote-stars { color: var(--muadzmuttaqin_gold); letter-spacing: .12em; }
+.muadzmuttaqin_quote-text { flex: 1; font-size: .98rem; }
+.muadzmuttaqin_quote-author { display: flex; align-items: center; gap: .8rem; }
+.muadzmuttaqin_avatar {
+  flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--muadzmuttaqin_gold-deep), var(--muadzmuttaqin_black));
+  border: 1px solid var(--muadzmuttaqin_gold); color: var(--muadzmuttaqin_cream);
+  font-family: var(--muadzmuttaqin_font-head); font-weight: 700;
+}
+.muadzmuttaqin_quote-name { font-weight: 600; line-height: 1.3; }
+.muadzmuttaqin_quote-meta { font-size: .85rem; color: var(--muadzmuttaqin_text-soft); line-height: 1.3; }
+
+/* ajakan reservasi dengan foto latar */
+.muadzmuttaqin_cta {
+  padding: clamp(5rem, 11vw, 8rem) 0; text-align: center;
+  background:
+    linear-gradient(180deg, rgba(12, 12, 12, .72), rgba(12, 12, 12, .88)),
+    url("../images/cta-reservasi.jpg") center / cover no-repeat,
+    var(--muadzmuttaqin_black);
+}
+.muadzmuttaqin_cta p { max-width: 52ch; margin: 1.2rem auto 2.2rem; color: var(--muadzmuttaqin_text); opacity: .9; }
+
+
+/* ==========================================================================
+   10. STACKING 3D "SIGNATURE DISHES"
+   - position: sticky membuat kartu menempel di atas saat discroll
+   - JS menghitung --muadzmuttaqin_s (scale), --muadzmuttaqin_r (rotateX), --muadzmuttaqin_dim
+   - perspective pada .muadzmuttaqin_stack supaya rotateX terlihat 3D
+   ========================================================================== */
+.muadzmuttaqin_stack { position: relative; perspective: 1500px; }
+.muadzmuttaqin_stack-card {
+  position: sticky;
+  top: calc(var(--muadzmuttaqin_header-h) + 20px + var(--muadzmuttaqin_i, 0) * 20px);
+  display: grid; grid-template-columns: 1.05fr .95fr;
+  min-height: min(470px, 72vh); margin-bottom: 34vh;
+  border-radius: 28px; border: 1px solid var(--muadzmuttaqin_line); overflow: hidden;
+  box-shadow: 0 -12px 50px rgba(0, 0, 0, .35);
+  transform-origin: 50% 0;
+  transform: scale(var(--muadzmuttaqin_s, 1)) rotateX(var(--muadzmuttaqin_r, 0deg));
+  will-change: transform;
+}
+.muadzmuttaqin_stack-card:last-child { margin-bottom: 0; }
+.muadzmuttaqin_stack-card::after {          /* lapisan gelap saat kartu tertutup kartu berikutnya */
+  content: ""; position: absolute; inset: 0; background: #000; pointer-events: none;
+  opacity: var(--muadzmuttaqin_dim, 0);
+}
+.muadzmuttaqin_stack-media img { width: 100%; height: 100%; object-fit: cover; }
+.muadzmuttaqin_stack-body { display: flex; flex-direction: column; justify-content: center; gap: 1rem; padding: clamp(1.5rem, 4vw, 3rem); }
+.muadzmuttaqin_stack-title { font-size: clamp(1.5rem, 3vw, 2.2rem); }
+.muadzmuttaqin_stack-text { color: var(--muadzmuttaqin_text-soft); }
+.muadzmuttaqin_stack-price { font-family: var(--muadzmuttaqin_font-head); font-weight: 700; font-size: 1.35rem; color: var(--muadzmuttaqin_gold); }
+
+
+/* ==========================================================================
+   11. MENU: FILTER, KARTU 3D, KERANJANG
+   ========================================================================== */
+.muadzmuttaqin_filter-bar { display: flex; flex-wrap: wrap; gap: .7rem; margin-bottom: .8rem; }
+.muadzmuttaqin_filter-btn {
+  padding: .6rem 1.3rem; border-radius: 999px;
+  border: 1px solid var(--muadzmuttaqin_line); color: var(--muadzmuttaqin_text);
+  font-size: .92rem; font-weight: 500;
+  transition: background-color .25s, color .25s, border-color .25s;
+}
+.muadzmuttaqin_filter-btn:hover { border-color: var(--muadzmuttaqin_gold); }
+.muadzmuttaqin_filter-btn.muadzmuttaqin_active { background: var(--muadzmuttaqin_gold); border-color: var(--muadzmuttaqin_gold); color: var(--muadzmuttaqin_black); }
+.muadzmuttaqin_filter-status { margin-bottom: 2rem; font-size: .9rem; color: var(--muadzmuttaqin_text-soft); }
+
+.muadzmuttaqin_menu-layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 2rem; align-items: start; }
+.muadzmuttaqin_menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1.5rem; }
+
+/* Kartu menu 3D
+   - perspective()      : ada di dalam transform kartu (diisi var --muadzmuttaqin_persp)
+   - rotateX / rotateY  : diisi JS dari posisi kursor (var --muadzmuttaqin_rx / --muadzmuttaqin_ry)
+   - preserve-3d        : kartu + .muadzmuttaqin_card-body supaya anak-anak punya kedalaman
+   - translateZ         : foto, deskripsi, judul, dan harga "naik" ke depan kartu
+   - box-shadow dinamis : --muadzmuttaqin_sx / --muadzmuttaqin_sy berlawanan arah rotasi
+   CATATAN: jangan beri overflow:hidden pada kartu, karena akan meratakan efek 3D.  */
+.muadzmuttaqin_card3d {
+  position: relative; display: flex; flex-direction: column; height: 100%;
+  padding: .7rem; border-radius: var(--muadzmuttaqin_radius);
+  background: var(--muadzmuttaqin_bg-card); border: 1px solid var(--muadzmuttaqin_line);
+  transform-style: preserve-3d;
+  transform: perspective(var(--muadzmuttaqin_persp)) rotateX(var(--muadzmuttaqin_rx, 0deg)) rotateY(var(--muadzmuttaqin_ry, 0deg));
+  box-shadow: var(--muadzmuttaqin_sx, 0px) var(--muadzmuttaqin_sy, 14px) 36px var(--muadzmuttaqin_shadow);
+  transition: transform .25s ease-out, box-shadow .25s ease-out, border-color .25s;
+  will-change: transform;
+}
+.muadzmuttaqin_card3d:hover { border-color: var(--muadzmuttaqin_gold); }
+.muadzmuttaqin_card-media { transform: translateZ(14px); }                      /* [3D: translateZ] */
+.muadzmuttaqin_card-media img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 13px; }
+.muadzmuttaqin_card-body { flex: 1; display: flex; flex-direction: column; gap: .5rem; padding: 1rem .5rem .5rem; transform-style: preserve-3d; }
+.muadzmuttaqin_card-title { font-size: 1.05rem; transform: translateZ(46px); }   /* [3D: translateZ] judul paling depan */
+.muadzmuttaqin_card-desc { flex: 1; font-size: .9rem; color: var(--muadzmuttaqin_text-soft); transform: translateZ(22px); }
+.muadzmuttaqin_card-foot { display: flex; align-items: center; justify-content: space-between; gap: .6rem; margin-top: .5rem; transform: translateZ(36px); }  /* harga + tombol */
+.muadzmuttaqin_card-price { font-family: var(--muadzmuttaqin_font-head); font-weight: 700; font-size: 1.05rem; color: var(--muadzmuttaqin_accent); }
+
+/* Keranjang */
+.muadzmuttaqin_cart {
+  position: sticky; top: calc(var(--muadzmuttaqin_header-h) + 16px);
+  padding: 1.5rem; border-radius: var(--muadzmuttaqin_radius);
+  background: var(--muadzmuttaqin_bg-card); border: 1px solid var(--muadzmuttaqin_line);
+}
+.muadzmuttaqin_cart-title { font-size: 1.25rem; margin-bottom: 1rem; }
+.muadzmuttaqin_cart-list { max-height: 46vh; overflow-y: auto; }
+.muadzmuttaqin_cart-item { display: flex; align-items: center; justify-content: space-between; gap: .8rem; padding: .8rem 0; border-bottom: 1px solid var(--muadzmuttaqin_line); }
+.muadzmuttaqin_cart-info { min-width: 0; }
+.muadzmuttaqin_cart-name { font-weight: 600; line-height: 1.3; }
+.muadzmuttaqin_cart-sub { font-size: .85rem; color: var(--muadzmuttaqin_text-soft); }
+.muadzmuttaqin_qty { display: flex; align-items: center; gap: .5rem; }
+.muadzmuttaqin_qty-btn {
+  width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+  border: 1px solid var(--muadzmuttaqin_gold); color: var(--muadzmuttaqin_accent); font-weight: 700; line-height: 1;
+  transition: background-color .2s, color .2s;
+}
+.muadzmuttaqin_qty-btn:hover { background: var(--muadzmuttaqin_gold); color: var(--muadzmuttaqin_black); }
+.muadzmuttaqin_qty-num { min-width: 1.4rem; text-align: center; font-weight: 600; }
+.muadzmuttaqin_cart-empty { padding: .6rem 0 1rem; color: var(--muadzmuttaqin_text-soft); font-size: .95rem; }
+.muadzmuttaqin_cart-total { display: flex; justify-content: space-between; align-items: baseline; margin: 1.2rem 0; font-size: 1.05rem; }
+.muadzmuttaqin_cart-total strong { font-family: var(--muadzmuttaqin_font-head); font-size: 1.45rem; color: var(--muadzmuttaqin_accent); }
+.muadzmuttaqin_cart-actions { display: grid; gap: .7rem; }
+.muadzmuttaqin_cart-actions .muadzmuttaqin_btn { width: 100%; }
+
+
+/* ==========================================================================
+   12. ABOUT
+   ========================================================================== */
+.muadzmuttaqin_about-media img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 24px; border: 1px solid var(--muadzmuttaqin_line); }
+
+/* Teks scroll-reveal per huruf: JS memecah teks jadi <span> huruf dan mengubah opacity 0.2 -> 1 */
+.muadzmuttaqin_reveal-block { padding: clamp(3rem, 14vh, 8rem) 0; }
+.muadzmuttaqin_reveal-text {
+  max-width: 24em; margin-top: 1.5rem;
+  font-family: var(--muadzmuttaqin_font-head); font-weight: 600; line-height: 1.4;
+  font-size: clamp(1.45rem, 3.3vw, 2.5rem); text-transform: none;
+}
+.muadzmuttaqin_word { display: inline-block; }          /* kata tidak terpotong di tengah */
+.muadzmuttaqin_char { opacity: .2; transition: opacity .15s linear; }
+
+.muadzmuttaqin_vm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: clamp(3rem, 7vw, 5rem); }
+.muadzmuttaqin_vm-card { padding: 2rem; border-radius: var(--muadzmuttaqin_radius); background: var(--muadzmuttaqin_bg-card); border: 1px solid var(--muadzmuttaqin_line); }
+.muadzmuttaqin_vm-card h3 { margin-bottom: .9rem; color: var(--muadzmuttaqin_accent); }
+.muadzmuttaqin_vm-card ul { display: grid; gap: .6rem; padding-left: 1.1rem; list-style: disc; color: var(--muadzmuttaqin_text-soft); }
+.muadzmuttaqin_vm-card p { color: var(--muadzmuttaqin_text-soft); }
+
+.muadzmuttaqin_feature-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.4rem; }
+.muadzmuttaqin_feature { padding-top: 1.1rem; border-top: 2px solid var(--muadzmuttaqin_gold); }
+.muadzmuttaqin_feature p { margin-top: .5rem; font-size: .95rem; color: var(--muadzmuttaqin_text-soft); }
+
+.muadzmuttaqin_chef-quote {
+  margin-top: 1.4rem; padding-left: 1.2rem; border-left: 2px solid var(--muadzmuttaqin_gold);
+  font-family: var(--muadzmuttaqin_font-head); font-style: italic; font-size: 1.25rem; line-height: 1.5;
+}
+.muadzmuttaqin_chef-name { margin-top: 1.2rem; font-weight: 600; }
+.muadzmuttaqin_chef-role { font-size: .9rem; color: var(--muadzmuttaqin_text-soft); }
+
+
+/* ==========================================================================
+   13. GALLERY: FLIP CARD + LIGHTBOX
+   - perspective          : pada .muadzmuttaqin_flip (kamera tiap kartu)
+   - preserve-3d          : pada .muadzmuttaqin_flip-inner supaya depan/belakang berada di ruang 3D
+   - backface-visibility  : hidden pada kedua sisi, sehingga sisi yang membelakangi tidak terlihat
+   - rotateY(180deg)      : sisi belakang diputar, dan seluruh kartu diputar saat hover/klik
+   ========================================================================== */
+.muadzmuttaqin_gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; }
+.muadzmuttaqin_flip { aspect-ratio: 4 / 5; perspective: 1000px; border-radius: 20px; }   /* [3D: perspective] */
+.muadzmuttaqin_flip-inner {
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d;                                                          /* [3D: preserve-3d] */
+  transition: transform .8s var(--muadzmuttaqin_ease);
+}
+.muadzmuttaqin_flip-face {
+  position: absolute; inset: 0; overflow: hidden; border-radius: 20px;
+  -webkit-backface-visibility: hidden; backface-visibility: hidden;                      /* [3D: backface-visibility] */
+}
+.muadzmuttaqin_flip-front img { width: 100%; height: 100%; object-fit: cover; }
+.muadzmuttaqin_flip-caption {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 2.2rem 1rem .9rem;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, .82));
+  font-family: var(--muadzmuttaqin_font-head); font-weight: 700; font-size: 1rem; color: var(--muadzmuttaqin_cream);
+}
+.muadzmuttaqin_flip-back {
+  transform: rotateY(180deg);                                                            /* sisi belakang menghadap ke belakang dulu */
+  display: flex; flex-direction: column; justify-content: center; gap: .9rem; padding: 1.4rem;
+  background: var(--muadzmuttaqin_surface); border: 1px solid var(--muadzmuttaqin_gold); color: var(--muadzmuttaqin_cream);
+}
+.muadzmuttaqin_flip-back h3 { color: var(--muadzmuttaqin_gold); }
+.muadzmuttaqin_flip-back p { font-size: .93rem; color: var(--muadzmuttaqin_muted); }
+.muadzmuttaqin_zoom-btn {
+  align-self: flex-start; padding: .45rem 1rem; border-radius: 999px;
+  border: 1px solid var(--muadzmuttaqin_gold); color: var(--muadzmuttaqin_gold-light); font-size: .85rem; font-weight: 600;
+  transition: background-color .2s, color .2s;
+}
+.muadzmuttaqin_zoom-btn:hover { background: var(--muadzmuttaqin_gold); color: var(--muadzmuttaqin_black); }
+.muadzmuttaqin_flip.muadzmuttaqin_flipped .muadzmuttaqin_flip-inner,
+.muadzmuttaqin_flip:focus-within .muadzmuttaqin_flip-inner { transform: rotateY(180deg); }
+@media (hover: hover) and (pointer: fine) {
+  .muadzmuttaqin_flip { cursor: zoom-in; }
+  .muadzmuttaqin_flip:hover .muadzmuttaqin_flip-inner { transform: rotateY(180deg); }
+}
+
+.muadzmuttaqin_lightbox {
+  position: fixed; inset: 0; z-index: 300; display: none; place-items: center; padding: 1.5rem;
+  background: rgba(0, 0, 0, .92);
+}
+.muadzmuttaqin_lightbox.muadzmuttaqin_open { display: grid; }
+.muadzmuttaqin_lightbox figure { max-width: min(1000px, 100%); text-align: center; color: var(--muadzmuttaqin_cream); }
+.muadzmuttaqin_lightbox-img { max-height: 78vh; margin-inline: auto; border-radius: 12px; }
+.muadzmuttaqin_lightbox-cap { margin-top: 1rem; font-family: var(--muadzmuttaqin_font-head); font-size: 1.15rem; }
+.muadzmuttaqin_lightbox-close {
+  position: absolute; top: 1.2rem; right: 1.2rem; width: 46px; height: 46px; border-radius: 50%;
+  border: 1px solid rgba(245, 239, 224, .5); color: var(--muadzmuttaqin_cream); font-size: 1.4rem; line-height: 1;
+}
+.muadzmuttaqin_lightbox-close:hover { background: var(--muadzmuttaqin_gold); color: var(--muadzmuttaqin_black); }
+
+
+/* ==========================================================================
+   14. SLIDER TESTIMONI 3D
+   - perspective + preserve-3d pada .muadzmuttaqin_slider-stage
+   - tiap kartu diposisikan oleh variabel --muadzmuttaqin_o (jarak dari kartu aktif)
+     dan --muadzmuttaqin_abs (nilai mutlaknya), diisi JavaScript:
+       translateX  : bergeser ke samping
+       translateZ  : makin jauh dari tengah, makin ke belakang
+       rotateY     : kartu samping berputar menghadap tengah
+       scale       : mengecil
+   ========================================================================== */
+.muadzmuttaqin_slider { position: relative; }
+.muadzmuttaqin_slider-stage {
+  position: relative; height: 390px; margin-bottom: 2rem;
+  perspective: 1400px;                                    /* [3D: perspective] */
+  transform-style: preserve-3d;                           /* [3D: preserve-3d] */
+}
+.muadzmuttaqin_slide {
+  position: absolute; top: 0; bottom: 0; left: 50%; width: min(470px, 76%);
+  display: flex; flex-direction: column; justify-content: center; gap: 1.2rem; padding: 2rem;
+  border-radius: 24px; background: var(--muadzmuttaqin_bg-card); border: 1px solid var(--muadzmuttaqin_line);
+  transform:
+    translateX(calc(-50% + var(--muadzmuttaqin_o, 0) * 62%))
+    translateZ(calc(var(--muadzmuttaqin_abs, 0) * var(--muadzmuttaqin_slide-z)))     /* [3D: translateZ] */
+    rotateY(calc(var(--muadzmuttaqin_o, 0) * var(--muadzmuttaqin_slide-rot)))
+    scale(calc(1 - var(--muadzmuttaqin_abs, 0) * .1));
+  opacity: calc(1 - var(--muadzmuttaqin_abs, 0) * .3);
+  filter: brightness(calc(1 - var(--muadzmuttaqin_abs, 0) * .18));
+  -webkit-backface-visibility: hidden; backface-visibility: hidden;
+  transition: transform .8s var(--muadzmuttaqin_ease), opacity .8s ease, filter .8s ease;
+  box-shadow: 0 24px 60px var(--muadzmuttaqin_shadow);
+}
+.muadzmuttaqin_slide:not([data-abs="0"]) { cursor: pointer; }
+.muadzmuttaqin_slide[data-abs="2"] { pointer-events: none; }
+.muadzmuttaqin_slide-quote { font-family: var(--muadzmuttaqin_font-head); font-style: italic; font-weight: 500; font-size: 1.2rem; line-height: 1.55; }
+.muadzmuttaqin_slider-controls { display: flex; align-items: center; justify-content: center; gap: 1.2rem; }
+.muadzmuttaqin_slider-btn {
+  width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center;
+  border: 1px solid var(--muadzmuttaqin_gold); color: var(--muadzmuttaqin_accent); font-size: 1.1rem;
+  transition: background-color .2s, color .2s;
+}
+.muadzmuttaqin_slider-btn:hover { background: var(--muadzmuttaqin_gold); color: var(--muadzmuttaqin_black); }
+.muadzmuttaqin_dots { display: flex; gap: .55rem; }
+.muadzmuttaqin_dot { width: 11px; height: 11px; border-radius: 50%; border: 1px solid var(--muadzmuttaqin_gold); transition: background-color .25s, transform .25s; }
+.muadzmuttaqin_dot.muadzmuttaqin_active { background: var(--muadzmuttaqin_gold); transform: scale(1.25); }
+
+
+/* ==========================================================================
+   15. FORM (reservasi + kontak)
+   ========================================================================== */
+.muadzmuttaqin_form-layout { display: grid; grid-template-columns: 1.25fr 1fr; gap: clamp(1.5rem, 4vw, 3rem); align-items: start; }
+.muadzmuttaqin_form-card {
+  padding: clamp(1.5rem, 4vw, 2.5rem); border-radius: 24px;
+  background: var(--muadzmuttaqin_bg-card); border: 1px solid var(--muadzmuttaqin_line);
+}
+.muadzmuttaqin_form-card > h2 { font-size: 1.6rem; margin-bottom: 1.5rem; }
+.muadzmuttaqin_form { display: grid; gap: 1.15rem; }
+.muadzmuttaqin_field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.15rem; }
+.muadzmuttaqin_field label { display: block; margin-bottom: .4rem; font-size: .92rem; font-weight: 600; }
+.muadzmuttaqin_field input, .muadzmuttaqin_field select, .muadzmuttaqin_field textarea {
+  width: 100%; padding: .85rem 1rem; border-radius: 12px;
+  background: var(--muadzmuttaqin_bg); color: var(--muadzmuttaqin_text);
+  border: 1px solid var(--muadzmuttaqin_line);
+  transition: border-color .25s, box-shadow .25s;
+}
+.muadzmuttaqin_field textarea { min-height: 130px; resize: vertical; }
+.muadzmuttaqin_field input:focus, .muadzmuttaqin_field select:focus, .muadzmuttaqin_field textarea:focus {
+  outline: none; border-color: var(--muadzmuttaqin_gold); box-shadow: 0 0 0 3px rgba(201, 162, 39, .25);
+}
+.muadzmuttaqin_field.muadzmuttaqin_invalid input,
+.muadzmuttaqin_field.muadzmuttaqin_invalid select,
+.muadzmuttaqin_field.muadzmuttaqin_invalid textarea { border-color: var(--muadzmuttaqin_danger); }
+.muadzmuttaqin_error { min-height: 1.2em; margin-top: .35rem; font-size: .85rem; color: var(--muadzmuttaqin_danger); }
+
+.muadzmuttaqin_info-card { padding: 1.8rem; border-radius: 24px; background: var(--muadzmuttaqin_bg-card); border: 1px solid var(--muadzmuttaqin_line); }
+.muadzmuttaqin_info-card + .muadzmuttaqin_info-card { margin-top: 1.2rem; }
+.muadzmuttaqin_info-card h3 { margin-bottom: 1rem; color: var(--muadzmuttaqin_accent); }
+.muadzmuttaqin_info-list { display: grid; gap: 1rem; }
+.muadzmuttaqin_info-list dt { font-size: .85rem; font-weight: 600; color: var(--muadzmuttaqin_accent); }
+.muadzmuttaqin_info-list dd { color: var(--muadzmuttaqin_text); }
+.muadzmuttaqin_rules { display: grid; gap: .6rem; padding-left: 1.1rem; list-style: disc; color: var(--muadzmuttaqin_text-soft); font-size: .95rem; }
+
+.muadzmuttaqin_summary { border-color: var(--muadzmuttaqin_gold); }
+.muadzmuttaqin_summary dl { display: grid; grid-template-columns: auto 1fr; gap: .45rem 1rem; }
+.muadzmuttaqin_summary dt { color: var(--muadzmuttaqin_text-soft); }
+.muadzmuttaqin_summary dd { font-weight: 600; }
+
+.muadzmuttaqin_map { margin-top: 1.2rem; border-radius: 20px; overflow: hidden; border: 1px solid var(--muadzmuttaqin_line); }
+.muadzmuttaqin_map-frame { width: 100%; height: 280px; border: 0; display: block; background: var(--muadzmuttaqin_surface); }
+
+
+/* ==========================================================================
+   16. TOAST DAN TOMBOL KEMBALI KE ATAS
+   ========================================================================== */
+.muadzmuttaqin_toast {
+  position: fixed; left: 50%; bottom: 1.6rem; z-index: 400;
+  max-width: min(92vw, 440px); padding: .9rem 1.4rem; border-radius: 14px;
+  background: var(--muadzmuttaqin_black); color: var(--muadzmuttaqin_cream);
+  border: 1px solid var(--muadzmuttaqin_gold); box-shadow: 0 16px 40px rgba(0, 0, 0, .5);
+  font-size: .95rem; text-align: center;
+  opacity: 0; pointer-events: none; transform: translate(-50%, 24px);
+  transition: opacity .3s ease, transform .3s ease;
+}
+.muadzmuttaqin_toast.muadzmuttaqin_show { opacity: 1; transform: translate(-50%, 0); }
+.muadzmuttaqin_toast.muadzmuttaqin_toast-error { border-color: #FF9188; }
+
+.muadzmuttaqin_backtop {
+  position: fixed; right: 1.2rem; bottom: 1.2rem; z-index: 150;
+  width: 48px; height: 48px; display: grid; place-items: center; border-radius: 50%;
+  background: var(--muadzmuttaqin_gold); color: var(--muadzmuttaqin_black);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, .4);
+  opacity: 0; pointer-events: none; transform: translateY(14px);
+  transition: opacity .3s ease, transform .3s ease, background-color .2s;
+}
+.muadzmuttaqin_backtop svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.muadzmuttaqin_backtop.muadzmuttaqin_show { opacity: 1; pointer-events: auto; transform: none; }
+.muadzmuttaqin_backtop:hover { background: var(--muadzmuttaqin_gold-light); }
+
+
+/* ==========================================================================
+   17. ANIMASI MASUK SAAT SCROLL
+   Elemen naik dari bawah sambil berputar rotateX ke posisi normal.
+   Kelas "muadzmuttaqin_js" ditambahkan ke <html> oleh script kecil di <head>,
+   jadi tanpa JavaScript konten tetap terlihat.
+   [3D: perspective() + rotateX()] ada di dalam transform di bawah ini.
+   ========================================================================== */
+.muadzmuttaqin_js .muadzmuttaqin_reveal {
+  opacity: 0;
+  transform: perspective(1000px) translateY(70px) rotateX(-16deg);
+  transform-origin: 50% 100%;
+  transition: opacity .8s ease, transform .9s var(--muadzmuttaqin_ease);
+  transition-delay: var(--muadzmuttaqin_delay, 0ms);
+}
+.muadzmuttaqin_js .muadzmuttaqin_reveal.muadzmuttaqin_revealed { opacity: 1; transform: none; }
+
+
+/* ==========================================================================
+   18. RESPONSIVE
+   Di layar kecil, perspective dan sudut rotasi dikurangi supaya layout tidak rusak.
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .muadzmuttaqin_menu-layout { grid-template-columns: 1fr; }
+  .muadzmuttaqin_cart { position: static; }
+  .muadzmuttaqin_footer-grid { grid-template-columns: 1fr 1fr; }
+  .muadzmuttaqin_gallery-grid { grid-template-columns: repeat(3, 1fr); }
+  .muadzmuttaqin_feature-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 900px) {
+  :root { --muadzmuttaqin_persp: 900px; }
+  .muadzmuttaqin_hero { min-height: auto; }
+  .muadzmuttaqin_hero-grid { grid-template-columns: 1fr; }
+  .muadzmuttaqin_hero-visual { padding: 2rem 2.5rem 1rem; }
+  .muadzmuttaqin_split { grid-template-columns: 1fr; }
+  .muadzmuttaqin_form-layout { grid-template-columns: 1fr; }
+  .muadzmuttaqin_quotes { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --muadzmuttaqin_header-h: 66px;
+    --muadzmuttaqin_persp: 700px;
+    --muadzmuttaqin_slide-z: -80px;       /* kedalaman slider dikurangi */
+    --muadzmuttaqin_slide-rot: -18deg;    /* putaran slider dikurangi */
+  }
+  .muadzmuttaqin_hamburger { display: grid; }
+  .muadzmuttaqin_nav-list {
+    position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; align-items: stretch; gap: 0; padding: .6rem 1.25rem 1.2rem;
+    background: rgba(12, 12, 12, .98); border-bottom: 1px solid var(--muadzmuttaqin_line);
+    display: none;
+  }
+  .muadzmuttaqin_nav-list.muadzmuttaqin_open { display: flex; }
+  .muadzmuttaqin_nav-link { display: block; padding: .85rem 0; font-size: 1rem; border-bottom: 1px solid rgba(245, 239, 224, .08); }
+  .muadzmuttaqin_nav-link::after { display: none; }
+
+  .muadzmuttaqin_stack { perspective: 900px; }
+  .muadzmuttaqin_stack-card { grid-template-columns: 1fr; min-height: 0; margin-bottom: 26vh; }
+  .muadzmuttaqin_stack-media img { height: 200px; }
+  .muadzmuttaqin_vm-grid { grid-template-columns: 1fr; }
+  .muadzmuttaqin_gallery-grid { grid-template-columns: repeat(2, 1fr); gap: .8rem; }
+  .muadzmuttaqin_slider-stage { height: 430px; }
+  .muadzmuttaqin_slide { width: 84%; padding: 1.6rem; }
+  .muadzmuttaqin_slide[data-abs="1"] { opacity: .4; }
+  .muadzmuttaqin_slide[data-abs="2"] { opacity: 0; }
+  .muadzmuttaqin_field-row { grid-template-columns: 1fr; }
+  .muadzmuttaqin_float-a { left: -8%; }
+  .muadzmuttaqin_float-b { right: -6%; }
+}
+
+@media (max-width: 480px) {
+  .muadzmuttaqin_container { width: min(1180px, 100% - 2rem); }
+  .muadzmuttaqin_footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .muadzmuttaqin_feature-grid { grid-template-columns: 1fr; }
+  .muadzmuttaqin_menu-grid { grid-template-columns: 1fr; }
+  .muadzmuttaqin_flip-back { padding: 1rem; gap: .6rem; }
+  .muadzmuttaqin_flip-back p { font-size: .82rem; }
+  .muadzmuttaqin_hero-actions .muadzmuttaqin_btn { flex: 1 1 100%; }
+  .muadzmuttaqin_summary dl { grid-template-columns: 1fr; gap: 0; }
+  .muadzmuttaqin_summary dd { margin-bottom: .5rem; }
+}
+
+
+/* ==========================================================================
+   20. MASKOT ADZZ CHEF
+   Spritesheet 8 frame sejajar (images/mascot/chef-welcome.png). Lebar sprite = 800% dari
+   kotak tampil, jadi satu frame persis memenuhi kotak. JavaScript menggeser
+   background-position (bagian 14 script.js). Lingkaran emas di belakang maskot
+   dipakai karena seragam hitam akan menyatu dengan latar gelap.
+   ========================================================================== */
+.muadzmuttaqin_mascot {
+  --muadzmuttaqin_mascot-w: 128px;
+  --muadzmuttaqin_mascot-h: 175px;
+  position: fixed; left: 1.6rem; bottom: .5rem; z-index: 140;
+  display: flex; align-items: flex-end; gap: 1rem;
+  pointer-events: none;                          /* area kosong tidak menghalangi klik */
+}
+.muadzmuttaqin_mascot > * { pointer-events: auto; }
+
+.muadzmuttaqin_mascot-bubble {
+  order: 2; position: relative; max-width: 250px; margin-bottom: 3.4rem; padding: .85rem 2.3rem .85rem 1rem;
+  border-radius: 16px;
+  background: var(--muadzmuttaqin_cream); color: var(--muadzmuttaqin_black);
+  border: 1px solid var(--muadzmuttaqin_gold); box-shadow: 0 12px 30px rgba(0, 0, 0, .4);
+  font-size: .9rem; line-height: 1.45;
+  transition: opacity .3s ease, transform .3s ease, visibility 0s;
+}
+.muadzmuttaqin_mascot-bubble::after {            /* ekor balon menuju maskot (di kiri) */
+  content: ""; position: absolute; left: -8px; bottom: 22px; width: 14px; height: 14px;
+  background: var(--muadzmuttaqin_cream);
+  border-left: 1px solid var(--muadzmuttaqin_gold); border-bottom: 1px solid var(--muadzmuttaqin_gold);
+  transform: rotate(45deg);
+}
+.muadzmuttaqin_mascot-bubble.muadzmuttaqin_fade {
+  opacity: 0; transform: translateX(-6px); visibility: hidden;
+  transition: opacity .3s ease, transform .3s ease, visibility 0s .3s;
+}
+.muadzmuttaqin_mascot-close {
+  position: absolute; top: .3rem; right: .35rem; width: 28px; height: 28px; border-radius: 50%;
+  font-size: 1.15rem; line-height: 1; color: var(--muadzmuttaqin_muted-dark);
+  transition: background-color .2s, color .2s;
+}
+.muadzmuttaqin_mascot-close:hover { background: rgba(122, 95, 10, .15); color: var(--muadzmuttaqin_black); }
+
+.muadzmuttaqin_mascot-btn { position: relative; width: var(--muadzmuttaqin_mascot-w); height: var(--muadzmuttaqin_mascot-h); }
+.muadzmuttaqin_mascot-btn::before {              /* lingkaran cahaya emas di belakang maskot */
+  content: ""; position: absolute; left: 50%; bottom: -6%; width: 118%; aspect-ratio: 1; transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245, 239, 224, .95) 0%, rgba(226, 199, 102, .55) 52%, rgba(201, 162, 39, 0) 71%);
+}
+.muadzmuttaqin_mascot-sprite {
+  position: relative; display: block; width: 100%; height: 100%;
+  background: url("../images/mascot/chef-welcome.png") 0 0 / 800% 100% no-repeat;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .4));
+}
+
+@media (max-width: 768px) {
+  .muadzmuttaqin_mascot { --muadzmuttaqin_mascot-w: 92px; --muadzmuttaqin_mascot-h: 126px; left: .9rem; gap: .7rem; }
+  .muadzmuttaqin_mascot-bubble { max-width: min(215px, calc(100vw - 150px)); margin-bottom: 2.2rem; font-size: .82rem; padding: .7rem 2.1rem .7rem .85rem; }
+}
+
+
+/* ==========================================================================
+   19. PREFERS-REDUCED-MOTION
+   Pengguna yang meminta animasi dikurangi: semua efek 3D dan animasi dimatikan.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; transition-delay: 0ms !important; }
+  .muadzmuttaqin_js .muadzmuttaqin_reveal { opacity: 1; transform: none; }
+  .muadzmuttaqin_card3d, .muadzmuttaqin_stack-card { transform: none !important; }
+  .muadzmuttaqin_card-media, .muadzmuttaqin_card-title, .muadzmuttaqin_card-desc, .muadzmuttaqin_card-foot,
+  .muadzmuttaqin_float-a, .muadzmuttaqin_float-b, .muadzmuttaqin_hero-tag { transform: none; }
+  .muadzmuttaqin_hero-photo::before { transform: none; }
+  :root { --muadzmuttaqin_slide-z: 0px; --muadzmuttaqin_slide-rot: 0deg; }
+  .muadzmuttaqin_flip.muadzmuttaqin_flipped .muadzmuttaqin_flip-inner,
+  .muadzmuttaqin_flip:focus-within .muadzmuttaqin_flip-inner { transform: rotateY(180deg); }  /* flip tetap berfungsi, tanpa animasi */
+  .muadzmuttaqin_char { opacity: 1; }
+}
